@@ -1,70 +1,63 @@
-module.exports = {
-            plugins: {
-                tailwindcss: {},
-                autoprefixer: {},
-            },
-        };
-// Mobile menu toggle
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const mobileMenu = document.getElementById('mobile-menu');
+// ===== Dynamic Year in Footer =====
+document.getElementById("year").textContent = new Date().getFullYear();
 
-mobileMenuButton.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
+// ===== Mobile Menu Toggle =====
+const mobileMenuButton = document.getElementById("mobile-menu-button");
+const mobileMenu = document.getElementById("mobile-menu");
+
+mobileMenuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("active");
 });
 
 // Close mobile menu when clicking a link
-const mobileLinks = document.querySelectorAll('#mobile-menu a');
-mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.remove('active');
+document.querySelectorAll(".mobile-menu .nav-link").forEach(link => {
+    link.addEventListener("click", () => {
+        mobileMenu.classList.remove("active");
     });
 });
 
-// Code toggle
-const codeToggle = document.getElementById('code-toggle');
-const codeContainer = document.getElementById('code-container');
+// ===== Active Section Highlight on Scroll =====
+const sections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".nav-link");
 
-codeToggle.addEventListener('click', () => {
-    codeContainer.classList.toggle('open');
-    codeToggle.textContent = codeContainer.classList.contains('open') 
-        ? 'Hide Code' 
-        : 'View Code';
-});
-
-// Set copyright year
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// Smooth scrolling for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Update active nav link on scroll
-const sections = document.querySelectorAll('section');
-const navLinks = document.querySelectorAll('nav a');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    
+window.addEventListener("scroll", () => {
+    let current = "";
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
+        const sectionTop = section.offsetTop - 70; // offset for navbar
         const sectionHeight = section.clientHeight;
-        
-        if (pageYOffset >= sectionTop - 200) {
-            current = section.getAttribute('id');
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+            current = section.getAttribute("id");
         }
     });
-    
+
     navLinks.forEach(link => {
-        link.classList.remove('nav-active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('nav-active');
+        link.classList.remove("nav-active");
+        if (link.getAttribute("href") === `#${current}`) {
+            link.classList.add("nav-active");
         }
     });
 });
+
+// ===== Smooth Fade-in Animation on Scroll =====
+const fadeElems = document.querySelectorAll("section, .skill-badge, .service-card");
+
+const fadeInOnScroll = () => {
+    fadeElems.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+        }
+    });
+};
+
+fadeElems.forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(30px)";
+    el.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+});
+
+window.addEventListener("scroll", fadeInOnScroll);
+fadeInOnScroll(); // trigger on load
+
+
